@@ -69,8 +69,10 @@ public class ISASimulator {
   // reset everythinig to it's initial state (i.e. memory/registers/channels
   // cleared and PC = 0)
   public void resetSimulator() {
-    PC = 0;
-    // TODO: Set the reg that holds your stack pointer to 8191
+    PC = 0;  
+    // init $SP, init $0
+    setReg(14, new Int34(1, (long) 8191));
+    setReg(0, new Int34(0, (long) 0));
 
     // reset memory
     clearMem(true);
@@ -643,7 +645,7 @@ public class ISASimulator {
     Int34 tmpI;
 
     while (num_done < num_insts) {
-      curr_inst = inst_mem[PC]; // get the next instruction
+      curr_inst = inst_mem[PC].substring(3, 17); // get the next instruction
 
       opcode_str = curr_inst.substring(0, OPCODE_LENGTH); // get the op-code
                                                           // bits
@@ -655,8 +657,7 @@ public class ISASimulator {
       case 0:
         r1 = Integer.valueOf(curr_inst.substring(4, 8)).intValue();
         r2 = Integer.valueOf(curr_inst.substring(8, 12)).intValue();
-        funcCode = Integer.valueOf(curr_inst.substring(12, 14))
-            .intValue();
+        funcCode = Integer.valueOf(curr_inst.substring(12, 14)).intValue();
         switch (funcCode) {
         // add
         case 0:
@@ -688,17 +689,23 @@ public class ISASimulator {
       case 1:
         r1 = Integer.valueOf(curr_inst.substring(4, 8)).intValue();
         r2 = Integer.valueOf(curr_inst.substring(8, 12)).intValue();
-        funcCode = Integer.valueOf(curr_inst.substring(12, 14))
-            .intValue();
+        funcCode = Integer.valueOf(curr_inst.substring(12, 14)).intValue();
         switch (funcCode) {
         // in
         case 0:
-          // TODO
+          try {
+            tmpI = channels.get((int)reg_file[r2].longValue()).take();
+            setReg(r1,tmpI);
+          } catch (InterruptedException e) {
+            System.err.println("LOL INTERRUPTED EXCEPTION IDK WHAT TO DO");
+            e.printStackTrace();
+            System.exit(1);
+          }          
           PC++;
           break;
         // out
         case 1:
-          // TODO
+          channels.get((int)reg_file[r2].longValue()).offer(reg_file[r1]);
           PC++;
           break;
         }
@@ -741,7 +748,7 @@ public class ISASimulator {
         break;
       // j, jal
       case 8:
-        imm = Integer.parseInt(curr_inst.substring(4, 13), 2);
+        imm = (int) twosCompValue(curr_inst.substring(4, 13)).longValue();
         funcCode = Integer.parseInt(curr_inst.substring(13, 14), 2);
         // j
         if (imm == 0) {
@@ -775,7 +782,7 @@ public class ISASimulator {
       case 10:
         imm = Integer.parseInt(curr_inst.substring(4, 14), 2);
         tmpI = reg_file[12].shiftLeft(10);
-        tmpI = tmpI.or(new Int34((long)imm));
+        tmpI = tmpI.or(new Int34((long) imm));
         setReg(12, tmpI);
         break;
       // --
@@ -783,16 +790,35 @@ public class ISASimulator {
       // break;
       // bne
       case 12:
+        r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
+        imm = (int) twosCompValue(curr_inst.substring(8, 14)).longValue();
+        if (reg_file[r1].longValue() != reg_file[9].longValue()) {
+          PC += imm;
+        } else {
+          PC++;
+        }
         break;
       // blt
       case 13:
+        r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
+        imm = (int) twosCompValue(curr_inst.substring(8, 14)).longValue();
+        if (reg_file[r1].longValue() < reg_file[9].longValue()) {
+          PC += imm;
+        } else {
+          PC++;
+        }
         break;
       // addi
       case 14:
+        r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
+        tmpI = twosCompValue(curr_inst.substring(8, 14));
+        tmpI = reg_file[r1].add(tmpI);
+        setReg(r1, tmpI);
         break;
       // halt
       case 15:
-        break;
+        System.out.println("Execution halted");
+        return;
       default:
         System.err.println("invalid opcode encountered at PC=" + PC);
         return;
