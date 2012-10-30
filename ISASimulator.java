@@ -784,6 +784,7 @@ public class ISASimulator {
         tmpI = reg_file[12].shiftLeft(10);
         tmpI = tmpI.or(new Int34((long) imm));
         setReg(12, tmpI);
+        PC++;
         break;
       // --
       // case 11:
@@ -814,6 +815,7 @@ public class ISASimulator {
         tmpI = twosCompValue(curr_inst.substring(8, 14));
         tmpI = reg_file[r1].add(tmpI);
         setReg(r1, tmpI);
+        PC++;
         break;
       // halt
       case 15:
