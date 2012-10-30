@@ -774,7 +774,7 @@ public class ISASimulator {
           PC++;
           break;
         // jor
-        case 2:
+        case 3:
           PC = (int) (PC + reg_file[r1].longValue() + imm);
           break;
         }
