@@ -70,16 +70,17 @@ public class ISASimulator {
   // cleared and PC = 0)
   public void resetSimulator() {
     PC = 0;
-    // init $SP, init $0
-    setReg(14, new Int34(1, (long) 8191));
-    setReg(0, new Int34(0, (long) 0));
-
+    
     // reset memory
     clearMem(true);
     clearMem(false);
 
     // reset register file
     clearRegFile();
+
+    // init $SP, init $0
+    setReg(14, new Int34(1, (long) 8191));
+    setReg(0, new Int34(0, (long) 0));
 
     // make sure we have the default channel size
     channel_buffer_size = 16;
