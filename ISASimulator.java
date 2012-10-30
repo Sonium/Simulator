@@ -649,15 +649,15 @@ public class ISASimulator {
 
       opcode_str = curr_inst.substring(0, OPCODE_LENGTH); // get the op-code
                                                           // bits
-      opcode = Integer.valueOf(opcode_str, 2).intValue();
+      opcode = Integer.parseInt(opcode_str, 2);
 
       // TODO: complete this
       switch (opcode) {
       // add, sub, nor, mv
       case 0:
-        r1 = Integer.valueOf(curr_inst.substring(4, 8)).intValue();
-        r2 = Integer.valueOf(curr_inst.substring(8, 12)).intValue();
-        funcCode = Integer.valueOf(curr_inst.substring(12, 14)).intValue();
+        r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
+        r2 = Integer.parseInt(curr_inst.substring(8, 12), 2);
+        funcCode = Integer.parseInt(curr_inst.substring(12, 14), 2);
         switch (funcCode) {
         // add
         case 0:
@@ -687,9 +687,9 @@ public class ISASimulator {
         break;
       // in, out
       case 1:
-        r1 = Integer.valueOf(curr_inst.substring(4, 8)).intValue();
-        r2 = Integer.valueOf(curr_inst.substring(8, 12)).intValue();
-        funcCode = Integer.valueOf(curr_inst.substring(12, 14)).intValue();
+        r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
+        r2 = Integer.parseInt(curr_inst.substring(8, 12), 2);
+        funcCode = Integer.parseInt(curr_inst.substring(12, 14), 2);
         switch (funcCode) {
         // in
         case 0:
