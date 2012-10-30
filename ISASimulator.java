@@ -736,6 +736,7 @@ public class ISASimulator {
         r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
         r2 = Integer.parseInt(curr_inst.substring(8, 12), 2);
         imm = Integer.parseInt(curr_inst.substring(12, 14), 2);
+        long test = reg_file[r2].longValue() + imm;
         reg_file[r1] = data_mem[(int) (reg_file[r2].longValue() + imm)];
         PC++;
         break;
@@ -870,119 +871,117 @@ public class ISASimulator {
                                                  // easier parsing
 
       // make sure it is a valid command and do that command
-      try {
+      if (input_tokens.hasMoreTokens())
         curr_token = input_tokens.nextToken();
+      else
+        continue;
 
-        if (curr_token.equals("iload")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: iload $file_name $start_addr");
-          else {
-            String file_name = input_tokens.nextToken();
-            int start_addr = Integer.parseInt(input_tokens.nextToken());
-            loadMem(file_name, start_addr, true);
-          }
-        } else if (curr_token.equals("dload")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: dload $file_name $start_addr");
-          else {
-            String file_name = input_tokens.nextToken();
-            int start_addr = Integer.parseInt(input_tokens.nextToken());
-            loadMem(file_name, start_addr, false);
-          }
-        } else if (curr_token.equals("go")) {
-          if (input_tokens.countTokens() != 1)
-            System.out.println("usage: go $number");
-          else {
-            int number = Integer.parseInt(input_tokens.nextToken());
-            execute(number);
-          }
-        } else if (curr_token.equals("dump_reg")) {
-          printRegFile();
-        } else if (curr_token.equals("set_reg")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: set_reg $reg_num $value");
-          else {
-            int reg_num = Integer.parseInt(input_tokens.nextToken());
-            Int34 value = new Int34(Long.parseLong(input_tokens.nextToken()));
-            setReg(reg_num, value);
-          }
-        } else if (curr_token.equals("dump_imem")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: dump_imem $start_addr $range");
-          else {
-            int start_addr = Integer.parseInt(input_tokens.nextToken());
-            int range = Integer.parseInt(input_tokens.nextToken());
-            printIMem(start_addr, range);
-          }
-        } else if (curr_token.equals("set_imem")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: set_imem $addr $value");
-          else {
-            int addr = Integer.parseInt(input_tokens.nextToken());
-            String value = input_tokens.nextToken();
-            setIMem(addr, value);
-          }
-        } else if (curr_token.equals("dump_dmem")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: dump_dmem $start_addr $range");
-          else {
-            int start_addr = Integer.parseInt(input_tokens.nextToken());
-            int range = Integer.parseInt(input_tokens.nextToken());
-            printDMem(start_addr, range);
-          }
-        } else if (curr_token.equals("set_dmem")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: set_dmem $addr $value");
-          else {
-            int addr = Integer.parseInt(input_tokens.nextToken());
-            Int34 value = new Int34(Long.parseLong(input_tokens.nextToken()));
-            setDMem(addr, value);
-          }
-        } else if (curr_token.equals("dump_channel")) {
-          if (input_tokens.countTokens() != 1)
-            System.out.println("usage: dump_channel $chan_number");
-          else {
-            int chan_num = Integer.parseInt(input_tokens.nextToken());
-            printChannel(chan_num);
-          }
-        } else if (curr_token.equals("put_channel")) {
-          if (input_tokens.countTokens() != 2)
-            System.out.println("usage: put_channel $chan_number $value");
-          else {
-            int chan_num = Integer.parseInt(input_tokens.nextToken());
-            Int34 value = new Int34(Long.parseLong(input_tokens.nextToken()));
-            addToChannel(chan_num, value);
-          }
-        } else if (curr_token.equals("clear_channel")) {
-          if (input_tokens.countTokens() != 1)
-            System.out.println("usage: clear_channel $chan_number");
-          else {
-            int chan_num = Integer.parseInt(input_tokens.nextToken());
-            clearChannel(chan_num);
-          }
-        } else if (curr_token.equals("set_buf_size")) {
-          if (input_tokens.countTokens() != 1)
-            System.out.println("usage: set_buf_size $size");
-          else {
-            int size = Integer.parseInt(input_tokens.nextToken());
-            setBufferSize(size);
-          }
-        } else if (curr_token.equals("instr_count")) {
-          System.out.println(inst_count + " instructions executed so far");
-        } else if (curr_token.equals("dump_pc")) {
-          System.out.println("current PC is " + PC);
-        } else if (curr_token.equals("reset")) {
-          resetSimulator();
-        } else if (curr_token.equals("exit")) {
-          System.out.println("leaving so soon? ... Bye!");
-          break;
-        } else {
-          System.out.println("unrecognized command.");
+      if (curr_token.equals("iload")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: iload $file_name $start_addr");
+        else {
+          String file_name = input_tokens.nextToken();
+          int start_addr = Integer.parseInt(input_tokens.nextToken());
+          loadMem(file_name, start_addr, true);
         }
-      } catch (Exception e) {
+      } else if (curr_token.equals("dload")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: dload $file_name $start_addr");
+        else {
+          String file_name = input_tokens.nextToken();
+          int start_addr = Integer.parseInt(input_tokens.nextToken());
+          loadMem(file_name, start_addr, false);
+        }
+      } else if (curr_token.equals("go")) {
+        if (input_tokens.countTokens() != 1)
+          System.out.println("usage: go $number");
+        else {
+          int number = Integer.parseInt(input_tokens.nextToken());
+          execute(number);
+        }
+      } else if (curr_token.equals("dump_reg")) {
+        printRegFile();
+      } else if (curr_token.equals("set_reg")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: set_reg $reg_num $value");
+        else {
+          int reg_num = Integer.parseInt(input_tokens.nextToken());
+          Int34 value = new Int34(Long.parseLong(input_tokens.nextToken()));
+          setReg(reg_num, value);
+        }
+      } else if (curr_token.equals("dump_imem")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: dump_imem $start_addr $range");
+        else {
+          int start_addr = Integer.parseInt(input_tokens.nextToken());
+          int range = Integer.parseInt(input_tokens.nextToken());
+          printIMem(start_addr, range);
+        }
+      } else if (curr_token.equals("set_imem")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: set_imem $addr $value");
+        else {
+          int addr = Integer.parseInt(input_tokens.nextToken());
+          String value = input_tokens.nextToken();
+          setIMem(addr, value);
+        }
+      } else if (curr_token.equals("dump_dmem")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: dump_dmem $start_addr $range");
+        else {
+          int start_addr = Integer.parseInt(input_tokens.nextToken());
+          int range = Integer.parseInt(input_tokens.nextToken());
+          printDMem(start_addr, range);
+        }
+      } else if (curr_token.equals("set_dmem")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: set_dmem $addr $value");
+        else {
+          int addr = Integer.parseInt(input_tokens.nextToken());
+          Int34 value = new Int34(Long.parseLong(input_tokens.nextToken()));
+          setDMem(addr, value);
+        }
+      } else if (curr_token.equals("dump_channel")) {
+        if (input_tokens.countTokens() != 1)
+          System.out.println("usage: dump_channel $chan_number");
+        else {
+          int chan_num = Integer.parseInt(input_tokens.nextToken());
+          printChannel(chan_num);
+        }
+      } else if (curr_token.equals("put_channel")) {
+        if (input_tokens.countTokens() != 2)
+          System.out.println("usage: put_channel $chan_number $value");
+        else {
+          int chan_num = Integer.parseInt(input_tokens.nextToken());
+          Int34 value = new Int34(Long.parseLong(input_tokens.nextToken()));
+          addToChannel(chan_num, value);
+        }
+      } else if (curr_token.equals("clear_channel")) {
+        if (input_tokens.countTokens() != 1)
+          System.out.println("usage: clear_channel $chan_number");
+        else {
+          int chan_num = Integer.parseInt(input_tokens.nextToken());
+          clearChannel(chan_num);
+        }
+      } else if (curr_token.equals("set_buf_size")) {
+        if (input_tokens.countTokens() != 1)
+          System.out.println("usage: set_buf_size $size");
+        else {
+          int size = Integer.parseInt(input_tokens.nextToken());
+          setBufferSize(size);
+        }
+      } else if (curr_token.equals("instr_count")) {
+        System.out.println(inst_count + " instructions executed so far");
+      } else if (curr_token.equals("dump_pc")) {
+        System.out.println("current PC is " + PC);
+      } else if (curr_token.equals("reset")) {
+        resetSimulator();
+      } else if (curr_token.equals("exit")) {
+        System.out.println("leaving so soon? ... Bye!");
+        break;
+      } else {
         System.out.println("unrecognized command.");
       }
-
     }
   }
 
