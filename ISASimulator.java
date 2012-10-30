@@ -70,7 +70,7 @@ public class ISASimulator {
   // cleared and PC = 0)
   public void resetSimulator() {
     PC = 0;
-    
+
     // reset memory
     clearMem(true);
     clearMem(false);
@@ -787,9 +787,11 @@ public class ISASimulator {
         setReg(12, tmpI);
         PC++;
         break;
-      // --
-      // case 11:
-      // break;
+      // jr
+      case 11:
+        r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
+        PC = (int) (reg_file[r1].longValue());
+        break;
       // bne
       case 12:
         r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
