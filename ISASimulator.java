@@ -754,7 +754,7 @@ public class ISASimulator {
         imm = (int) twosCompValue(curr_inst.substring(4, 13)).longValue();
         funcCode = Integer.parseInt(curr_inst.substring(13, 14), 2);
         // j
-        if (imm == 0) {
+        if (funcCode == 0) {
           PC += imm;
         }
         // jal
