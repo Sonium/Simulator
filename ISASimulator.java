@@ -750,6 +750,7 @@ public class ISASimulator {
         break;
       // j, jal
       case 8:
+        long imm1 = twosCompValue(curr_inst.substring(4, 13)).longValue();
         imm = (int) twosCompValue(curr_inst.substring(4, 13)).longValue();
         funcCode = Integer.parseInt(curr_inst.substring(13, 14), 2);
         // j
