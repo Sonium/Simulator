@@ -808,7 +808,7 @@ public class ISASimulator {
       case 13:
         r1 = Integer.parseInt(curr_inst.substring(4, 8), 2);
         imm = (int) twosCompValue(curr_inst.substring(8, 14)).longValue();
-        if (reg_file[r1].longValue() < reg_file[9].longValue()) {
+        if (reg_file[r1].bigValue.compareTo(reg_file[9].bigValue) < 0) {
           PC += imm;
         } else {
           PC++;
